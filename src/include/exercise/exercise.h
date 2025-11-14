@@ -11,6 +11,8 @@
 #include <stdio.h>
 
 void run_exercise(void);
+void test_string(void);
+void exercise_callback(void);
 int callback(int a, int b, int (*p)(int, int));
 int plus(int a, int b);
 
