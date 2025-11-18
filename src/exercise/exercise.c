@@ -9,7 +9,7 @@
 //void test();
 
 void run_exercise(void) {
-    test_string();
+    string_func();
 }
 
 void test_string(void) {
@@ -33,6 +33,7 @@ void test_string(void) {
         printf("str_with_nul[%d]=%c\n", i, str_with_nul[i]);
     }
     // 未手动添加的，末尾只有一个NUL，访问越界时候只能找到一个随机内存存储内容
+    // 结论是即使手动加了\0,系统依然再加一个\0
     for (int i = 0; i < 6; i++) {
         printf("str_normal[%d]=%c\n", i, str_normal[i]);
     }
@@ -42,6 +43,43 @@ void test_string(void) {
     for (int i = 0; i < 9; i++) {
         printf("manul_str[%d]=%c\n", i, manul_str[i]);
     }
+}
+
+void string_func(void) {
+    char origin[] = "origin hello";
+    char target_short[5];
+    char target_equal[13];
+    char target_longer[130];
+    
+    // 如果目标字符串长度比来源短，程序会异常
+    //strcpy(target_short, origin);
+    // 刚好相等，正常使用
+    strcpy(target_equal, origin);
+    printf("target_equal=%s\n", target_equal);
+    // 目标更长，正常使用
+    strcpy(target_longer, origin);
+    printf("target_longer=%s\n", target_longer);
+    // 尝试继续向长字符串拷贝内容
+    char ori2[] = ".Today is rainy.";
+    strcat(target_longer, ori2);
+    printf("target_longer=%s\n", target_longer);
+    // 数组 char s[125]; 声明后已经在栈上分配了 1255 个字节的内存(若是全局/静态则在静态区)，只是内容未初始化，里面是未定义值。strlen 计算以首个 '\0' 结束的字符串长度，不是缓冲区容量。在你 strcpy(s, "hello"); 后，s 里是 h e l l o \0 ...，所以 strlen(s) 返回5
+    printf("target_longer's size=%zu\n", strlen(target_longer));
+    
+    char str_cmp1[] = "5";
+    char str_cmp2[] = "5";
+    printf("str1=%s, str2=%s, cmp=%d\n", str_cmp1, str_cmp2, strcmp(str_cmp1, str_cmp2));
+    char *p_str_cmp1 = "abcdef";
+    char *p_str_cmp2 = "qwerrt";
+    // strcmp比较第一个不相同字符的ascII值
+    printf("str1=%s, str2=%s, cmp=%d\n", p_str_cmp1, p_str_cmp2, strcmp(p_str_cmp1, p_str_cmp2));
+    
+    char *fp = strchr("hellohello", 'l');
+    fp = fp + 2;
+    printf("fp=%c\n", *fp);
+    
+    char *str_fp = strstr("hellohello", "lo");
+    printf("str_fp=%c\n", *str_fp);
 }
 
 void exercise_callback(void) {
