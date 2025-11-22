@@ -9,7 +9,50 @@
 //void test();
 
 void run_exercise(void) {
-    string_func();
+    test_param();
+}
+
+void exercise_struct(void) {
+    struct Rectangle rect1;
+    rect1.width = 1;
+    rect1.height = 2;
+    printf("rect1 h=%d\n", rect1.height);
+    printf("rect1 w=%d\n", rect1.width);
+    
+    // 结构体也遵循入参规则，非指针类型传入函数也无法被改变
+    // 可见结构体变量直接传入to_square后，虽然方法内部的结构体中某个参数被改变后是新的值
+    // 一旦方法执行结束，结构体变量的值还是没有变化
+    to_square(rect1);
+    struct Rectangle *rectangle_p;
+    rectangle_p = &rect1;
+    to_square_p(rectangle_p);
+    to_square_p(&rect1);
+    
+    struct Response resp;
+//    strcpy(resp.msg, "hello");
+    resp.msg = "hello";
+    printf("resp msg=%s\n", resp.msg);
+}
+
+void test_param(void) {
+    int i = 1;
+    test_change_param(i);
+    printf("i=%d\n", i);
+}
+
+void test_change_param(int i) {
+    i = 5;
+    printf("i=%d\n", i);
+}
+
+void to_square(struct Rectangle rect) {
+    rect.height = rect.width;
+    printf("rect formatted to square!w=%d, h=%d\n", rect.width, rect.height);
+}
+
+void to_square_p(struct Rectangle *rect) {
+    rect->width = rect->height;
+    printf("rect formatted to square!w=%d, h=%d\n", rect->width, rect->height);
 }
 
 void test_string(void) {
@@ -63,7 +106,7 @@ void string_func(void) {
     char ori2[] = ".Today is rainy.";
     strcat(target_longer, ori2);
     printf("target_longer=%s\n", target_longer);
-    // 数组 char s[125]; 声明后已经在栈上分配了 1255 个字节的内存(若是全局/静态则在静态区)，只是内容未初始化，里面是未定义值。strlen 计算以首个 '\0' 结束的字符串长度，不是缓冲区容量。在你 strcpy(s, "hello"); 后，s 里是 h e l l o \0 ...，所以 strlen(s) 返回5
+    // 数组 char s[125]; 声明后已经在栈上分配了 125 个字节的内存(若是全局/静态则在静态区)，只是内容未初始化，里面是未定义值。strlen 计算以首个 '\0' 结束的字符串长度，不是缓冲区容量。在你 strcpy(s, "hello"); 后，s 里是 h e l l o \0 ...，所以 strlen(s) 返回5
     printf("target_longer's size=%zu\n", strlen(target_longer));
     
     char str_cmp1[] = "5";
