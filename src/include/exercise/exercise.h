@@ -21,6 +21,12 @@ struct Response {
     char *msg;
 };
 
+union Data {
+    int i;
+    float j;
+    char str[20];
+};
+
 void run_exercise(void);
 void test_string(void);
 void exercise_callback(void);
@@ -32,5 +38,8 @@ void to_square(struct Rectangle rect);
 void to_square_p(struct Rectangle *rect);
 void test_param(void);
 void test_change_param(int i);
+void exercise_union(void);
+void exercise_file(void);
+void mirror_game(void);
 
 #endif /* exercise_h */

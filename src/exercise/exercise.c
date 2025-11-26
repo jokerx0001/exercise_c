@@ -6,10 +6,42 @@
 //
 
 #include "exercise.h"
-//void test();
 
 void run_exercise(void) {
-    test_param();
+    exercise_file();
+}
+
+void mirror_game(void) {
+    char c = getchar();
+    while (c != '~') {
+        putchar(c);
+        c = getchar();
+    }
+    printf("\n");
+    printf("exit!");
+    printf("\n");
+}
+
+void exercise_file(void) {
+//    int i;
+//    int j;
+//    scanf("%d, %d", &i, &j);
+//    printf("%d, %d\n", i, j);
+    char *str;
+//    fgets(str, 10, stdin);
+//    printf("str=%s\n", str);
+//    puts(str);
+//    fputs(str, stdout);
+    char buffer[100];
+    FILE *fp = fopen("../resources/config.txt", "r");
+    fscanf(fp, "%s", buffer);
+    printf("line=%s", buffer);
+}
+
+void exercise_union(void) {
+    union Data test;
+    test.i = 10;
+    printf("test = %d\n", test.i);
 }
 
 void exercise_struct(void) {
