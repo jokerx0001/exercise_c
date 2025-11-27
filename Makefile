@@ -63,6 +63,7 @@ $(MAIN_OBJECT): $(MAIN_SOURCE) | $(OBJDIR)
 $(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
 	@echo "Compiling $<..."
 	@mkdir -p $(dir $(DEPDIR)/$*.d)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -MMD -MP -MF $(DEPDIR)/$*.d -c $< -o $@
 
 # =============================================================================

@@ -5,7 +5,7 @@
 //  Created by jokerx on 2025/11/10.
 //
 
-#include "exercise.h"
+#include "exercise/exercise.h"
 
 void run_exercise(void) {
     exercise_file();
@@ -33,7 +33,7 @@ void exercise_file(void) {
 //    puts(str);
 //    fputs(str, stdout);
     char buffer[100];
-    FILE *fp = fopen("../resources/config.txt", "r");
+    FILE *fp = fopen("resources/config.txt", "r");
     fscanf(fp, "%s", buffer);
     printf("line=%s", buffer);
 }

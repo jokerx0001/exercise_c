@@ -4,5 +4,14 @@
 xcuserdata/
 DerivedData/
 build/
+
+# vscode
+.vscode/
+
+# macos
 .DS_Store
 
+#plugin
+.github/
+.qoder/
+*/.qoder/

@@ -6,7 +6,7 @@
 //
 
 #include <stdio.h>
-#include "exercise.h"
+#include "exercise/exercise.h"
 
 int main(int argc, const char * argv[]) {
     run_exercise();
