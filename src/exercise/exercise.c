@@ -10,8 +10,10 @@
 #include "util/time_util.h"
 
 void run_exercise(void) {
+  log_init("exercise.log", INFO);
   log_info("start exercise");
   log_info("end exercise");
+  log_shutdown();
 }
 
 void mirror_game(void) {

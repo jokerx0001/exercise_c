@@ -18,6 +18,19 @@
 enum LOG_LEVEL { DEBUG, INFO, WARN, ERROR };
 
 /**
+ * @brief 初始化日志模块
+ * @param path 日志文件路径
+ * @param min_level 最小日志输出等级
+ * @return 成功返回0，失败返回-1
+ */
+int log_init(const char *path, enum LOG_LEVEL min_level);
+
+/**
+ * @brief 关闭日志模块，释放资源
+ */
+void log_shutdown(void);
+
+/**
  * @brief 打印 DEBUG 等级日志。
  * @param msg 日志信息
  */

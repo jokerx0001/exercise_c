@@ -32,7 +32,6 @@ static pthread_t worker_tid;
 static pthread_mutex_t q_mutex = PTHREAD_MUTEX_INITIALIZER;
 static pthread_cond_t q_cond = PTHREAD_COND_INITIALIZER;
 static bool worker_running = false;
-static bool worker_exit = false;
 
 // 有界队列（环形缓冲）
 #define LOG_QUEUE_CAP 1024
@@ -69,6 +68,10 @@ static bool queue_push(const char *msg) {
   return true;
 }
 
+/**
+ * @brief 从队列中弹出一条日志消息
+ * @return 日志消息字符串指针，调用者负责释放；队列空时返回NULL
+ */
 static char *queue_pop() {
   if (q_size == 0)
     return NULL;
@@ -78,12 +81,15 @@ static char *queue_pop() {
   return msg;
 }
 
-// 后台写线程函数：消费队列写入文件
+/**
+ * @brief 日志写入后台线程函数
+ * @param arg 未使用参数
+ */
 static void *log_worker(void *arg) {
   (void)arg;
   pthread_mutex_lock(&q_mutex);
-  while (!worker_exit) {
-    while (q_size == 0 && !worker_exit) {
+  while (worker_running) {
+    while (q_size == 0 && worker_running) {
       pthread_cond_wait(&q_cond, &q_mutex);
     }
     // 批量消费
@@ -106,8 +112,11 @@ static void *log_worker(void *arg) {
   return NULL;
 }
 
-// 核心输出函数：进行等级过滤 + 时间戳 + 格式化。
-// 同步输出控制台，异步入队写文件（仅模块线程写文件）
+/**
+ * @brief 核心日志写入函数
+ * @param msg 日志消息
+ * @param level 日志等级
+ */
 static void write_log(const char *msg, enum LOG_LEVEL level) {
   // 过滤低等级日志
   if (level < current_log_level)
@@ -136,7 +145,10 @@ static void write_log(const char *msg, enum LOG_LEVEL level) {
   }
 }
 
-// 改进后的文件初始化：严格检查存在与写权限，打开文件句柄
+/**
+ * @brief 初始化日志文件
+ * @return 成功返回0，失败返回-1
+ */
 static int log_file_init() {
   // 先判断文件是否存在
   if (access(file_path, F_OK) == 0) {
@@ -166,7 +178,6 @@ static int log_file_init() {
   return 0;
 }
 
-// 新增：模块初始化（供外部在程序启动时调用）
 int log_init(const char *path, enum LOG_LEVEL min_level) {
   if (path && *path)
     file_path = path;
@@ -179,30 +190,28 @@ int log_init(const char *path, enum LOG_LEVEL min_level) {
     return -1;
   }
 
-  worker_exit = false;
   if (pthread_create(&worker_tid, NULL, log_worker, NULL) != 0) {
     fprintf(stderr, "日志后台线程创建失败: %s\n", strerror(errno));
     // 关闭文件回退到控制台
     fclose(log_file);
     log_file = NULL;
     is_file_enable = false;
+    worker_running = false;
     return -1;
   }
   worker_running = true;
   return 0;
 }
 
-// 新增：模块关闭（在程序退出时调用）
 void log_shutdown() {
   if (!worker_running)
     return;
   pthread_mutex_lock(&q_mutex);
-  worker_exit = true;
-  pthread_cond_signal(&q_cond);
+  worker_running = false;
+  pthread_cond_broadcast(&q_cond);
   pthread_mutex_unlock(&q_mutex);
 
   pthread_join(worker_tid, NULL);
-  worker_running = false;
 
   // 清空残留队列
   pthread_mutex_lock(&q_mutex);
@@ -221,6 +230,11 @@ void log_shutdown() {
   is_file_enable = false;
 }
 
+/**
+ * @brief 将日志等级枚举转换为字符串
+ * @param level 日志等级枚举值
+ * @return 对应的字符串表示
+ */
 static const char *log_level_to_string(enum LOG_LEVEL level) {
   switch (level) {
   case DEBUG:
