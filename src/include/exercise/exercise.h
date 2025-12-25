@@ -12,19 +12,19 @@
 #include <string.h>
 
 struct Rectangle {
-    int width;
-    int height;
+  int width;
+  int height;
 };
 
 struct Response {
-    int code;
-    char *msg;
+  int code;
+  char *msg;
 };
 
 union Data {
-    int i;
-    float j;
-    char str[20];
+  int i;
+  float j;
+  char str[20];
 };
 
 void run_exercise(void);
@@ -41,5 +41,7 @@ void test_change_param(int i);
 void exercise_union(void);
 void exercise_file(void);
 void mirror_game(void);
+void test_malloc(void);
+void test_undified(void);
 
 #endif /* exercise_h */

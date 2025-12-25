@@ -8,12 +8,33 @@
 #include "exercise/exercise.h"
 #include "log/log.h"
 #include "util/time_util.h"
+#include <stdlib.h>
+#include <string.h>
 
 void run_exercise(void) {
   log_init("exercise.log", INFO);
   log_info("start exercise");
+  test_undified();
   log_info("end exercise");
   log_shutdown();
+}
+
+void test_undified(void) {
+  int *a;
+  printf("a=%d\n", *a);
+
+  int x;
+  printf("x=%d\n", x);
+}
+
+void test_malloc(void) {
+  const char *to_print = "hello malloc";
+  char *board = malloc(strlen(to_print) + 1);
+  strcpy(board, to_print);
+  printf("board=%s\n", board);
+  free(board);
+  printf("size=%d", sizeof *board);
+  printf("size=%d", sizeof(char));
 }
 
 void mirror_game(void) {
