@@ -9,10 +9,10 @@
 #include "log/log.h"
 #include "util/time_util.h"
 #include <errno.h>
-#include <pthread.h> // 新增：线程与同步
+#include <pthread.h>
 #include <stdbool.h>
-#include <stdio.h>  // 新增：printf / FILE
-#include <stdlib.h> // 新增：malloc/free
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -63,6 +63,8 @@ static bool queue_push(const char *msg) {
   copy[len] = '\0';
 
   log_queue[q_tail] = copy;
+  // +1：把尾指针往前移动一个槽位（刚入队占用了当前位置，下一次应写到下一个位置）。
+  // % LOG_QUEUE_CAP：到达数组末尾时从头绕回，保证索引始终在 [0, CAP-1] 范围内。
   q_tail = (q_tail + 1) % LOG_QUEUE_CAP;
   q_size++;
   return true;
@@ -190,6 +192,7 @@ int log_init(const char *path, enum LOG_LEVEL min_level) {
     return -1;
   }
 
+  worker_running = true;
   if (pthread_create(&worker_tid, NULL, log_worker, NULL) != 0) {
     fprintf(stderr, "日志后台线程创建失败: %s\n", strerror(errno));
     // 关闭文件回退到控制台
@@ -199,7 +202,6 @@ int log_init(const char *path, enum LOG_LEVEL min_level) {
     worker_running = false;
     return -1;
   }
-  worker_running = true;
   return 0;
 }
 

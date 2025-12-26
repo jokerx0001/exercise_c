@@ -14,7 +14,7 @@
 void run_exercise(void) {
   log_init("exercise.log", INFO);
   log_info("start exercise");
-  test_undified();
+  test_malloc();
   log_info("end exercise");
   log_shutdown();
 }
@@ -35,6 +35,9 @@ void test_malloc(void) {
   free(board);
   printf("size=%d", sizeof *board);
   printf("size=%d", sizeof(char));
+  char *str;
+  str = "1234565";
+  printf("str=%s\n", str);
 }
 
 void mirror_game(void) {
