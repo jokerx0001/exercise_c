@@ -20,8 +20,8 @@ static const char *log_level_to_string(enum LOG_LEVEL level);
 
 // 当前最小输出等级，外部可修改（未做线程保护）。
 enum LOG_LEVEL current_log_level = DEBUG;
-// 日志输出模板：时间 等级 消息\n
-static const char *log_template = "[%s] [%s] %s\n";
+// 日志输出模板：时间 等级 [线程名] 消息\n
+static const char *log_template = "%s %s [%s] %s\n";
 static const char *file_path = "app.log";
 // 日志文件可用标志
 static bool is_file_enable = false;
@@ -115,6 +115,35 @@ static void *log_worker(void *arg) {
 }
 
 /**
+ * @brief 获取当前线程名称，若不可用则返回线程ID字符串
+ * @param buf 输出缓冲区
+ * @param size 缓冲区大小
+ */
+static void get_thread_name(char *buf, size_t size) {
+  if (!buf || size == 0)
+    return;
+  buf[0] = '\0';
+  pthread_t current_thread = pthread_self();
+  // 尝试获取线程名
+  if (pthread_getname_np(current_thread, buf, size) != 0 || buf[0] == '\0') {
+    // 回退为线程ID字符串
+#if defined(__APPLE__)
+    uint64_t tid = 0;
+    if (pthread_threadid_np(NULL, &tid) == 0) {
+      snprintf(buf, size, "tid:%llu", (unsigned long long)tid);
+    } else {
+      snprintf(buf, size, "tid:%lu", (unsigned long)pthread_self());
+    }
+#elif defined(__linux__)
+    long tid = syscall(SYS_gettid);
+    snprintf(out, size, "tid:%ld", tid);
+#else
+    snprintf(buf, size, "tid:%lu", (unsigned long)pthread_self());
+#endif
+  }
+}
+
+/**
  * @brief 核心日志写入函数
  * @param msg 日志消息
  * @param level 日志等级
@@ -127,9 +156,12 @@ static void write_log(const char *msg, enum LOG_LEVEL level) {
   const char *time_str = util_get_time_str();
   const char *level_str = log_level_to_string(level);
   char buf[LOG_MSG_MAX];
+  char thread_name[64];
+  get_thread_name(thread_name, sizeof(thread_name));
 
   // 格式化日志字符串并存入缓冲变量
-  snprintf(buf, sizeof(buf), log_template, time_str, level_str, msg);
+  snprintf(buf, sizeof(buf), log_template, time_str, level_str, thread_name,
+           msg);
   // 控制台同步输出
   printf("%s", buf);
 
