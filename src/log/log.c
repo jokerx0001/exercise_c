@@ -10,11 +10,15 @@
 #include "util/time_util.h"
 #include <errno.h>
 #include <pthread.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#if defined(__linux__)
+#include <sys/syscall.h>
+#endif
 
 static const char *log_level_to_string(enum LOG_LEVEL level);
 
@@ -136,7 +140,7 @@ static void get_thread_name(char *buf, size_t size) {
     }
 #elif defined(__linux__)
     long tid = syscall(SYS_gettid);
-    snprintf(out, size, "tid:%ld", tid);
+    snprintf(buf, size, "tid:%ld", tid);
 #else
     snprintf(buf, size, "tid:%lu", (unsigned long)pthread_self());
 #endif
@@ -148,7 +152,7 @@ static void get_thread_name(char *buf, size_t size) {
  * @param msg 日志消息
  * @param level 日志等级
  */
-static void write_log(const char *msg, enum LOG_LEVEL level) {
+static void write_logf(enum LOG_LEVEL level, const char *fmt, va_list ap) {
   // 过滤低等级日志
   if (level < current_log_level)
     return;
@@ -159,7 +163,10 @@ static void write_log(const char *msg, enum LOG_LEVEL level) {
   char thread_name[64];
   get_thread_name(thread_name, sizeof(thread_name));
 
-  // 格式化日志字符串并存入缓冲变量
+  // 先格式化用户消息
+  char msg[LOG_MSG_MAX];
+  vsnprintf(msg, sizeof(msg), fmt, ap);
+  // 再拼装模板
   snprintf(buf, sizeof(buf), log_template, time_str, level_str, thread_name,
            msg);
   // 控制台同步输出
@@ -284,7 +291,30 @@ static const char *log_level_to_string(enum LOG_LEVEL level) {
   }
 }
 
-void log_debug(const char *msg) { write_log(msg, DEBUG); }
-void log_info(const char *msg) { write_log(msg, INFO); }
-void log_warn(const char *msg) { write_log(msg, WARN); }
-void log_error(const char *msg) { write_log(msg, ERROR); }
+void log_debug(const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  write_logf(DEBUG, fmt, ap);
+  va_end(ap);
+}
+
+void log_info(const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  write_logf(INFO, fmt, ap);
+  va_end(ap);
+}
+
+void log_warn(const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  write_logf(WARN, fmt, ap);
+  va_end(ap);
+}
+
+void log_error(const char *fmt, ...) {
+  va_list ap;
+  va_start(ap, fmt);
+  write_logf(ERROR, fmt, ap);
+  va_end(ap);
+}

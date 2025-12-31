@@ -31,27 +31,31 @@ int log_init(const char *path, enum LOG_LEVEL min_level);
 void log_shutdown(void);
 
 /**
- * @brief 打印 DEBUG 等级日志。
- * @param msg 日志信息
+ * @brief 打印 DEBUG 等级日志（printf 风格）。
+ * @param fmt 模版字符串
+ * @param ... 变长参数
  */
-void log_debug(const char *msg);
+void log_debug(const char *fmt, ...);
 
 /**
- * @brief 打印 INFO 等级日志。
- * @param msg 日志信息
+ * @brief 打印 INFO 等级日志（printf 风格）。
+ * @param fmt 模版字符串
+ * @param ... 变长参数
  */
-void log_info(const char *msg);
+void log_info(const char *fmt, ...);
 
 /**
- * @brief 打印 WARN 等级日志。
- * @param msg 日志信息
+ * @brief 打印 WARN 等级日志（printf 风格）。
+ * @param fmt 模版字符串
+ * @param ... 变长参数
  */
-void log_warn(const char *msg);
+void log_warn(const char *fmt, ...);
 
 /**
- * @brief 打印 ERROR 等级日志。
- * @param msg 日志信息
+ * @brief 打印 ERROR 等级日志（printf 风格）。
+ * @param fmt 模版字符串
+ * @param ... 变长参数
  */
-void log_error(const char *msg);
+void log_error(const char *fmt, ...);
 
 #endif /* log_h */

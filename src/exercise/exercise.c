@@ -11,12 +11,36 @@
 #include <stdlib.h>
 #include <string.h>
 
+void do_test_bound(void);
+double test_bound(int i);
+
+typedef struct {
+  int arr[2];
+  double d;
+} ac;
+
 void run_exercise(void) {
-  log_init("exercise.log", INFO);
+  log_init("exercise.log", DEBUG);
   log_info("start exercise");
-  test_malloc();
+  log_debug("test param.i=%d", 10);
   log_info("end exercise");
   log_shutdown();
+}
+
+void do_test_bound() {
+  for (int i = -1; i < 6; i++) {
+    float d = test_bound(i);
+    char msg[64];
+    snprintf(msg, sizeof(msg), "test_bound(%d)=%f", i, d);
+    log_info(msg);
+  }
+}
+
+double test_bound(int i) {
+  ac a;
+  a.d = 3.14;
+  a.arr[i] = 1914235325;
+  return a.d;
 }
 
 void test_undified(void) {
