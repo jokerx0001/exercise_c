@@ -112,7 +112,7 @@ install: $(TARGET)
 .PHONY: run
 run: $(TARGET) resources
 	@echo "Running $(PROJECT_NAME)..."
-	@cd $(BINDIR) && ./$(PROJECT_NAME)
+	@$(TARGET)
 
 # =============================================================================
 # 包含依赖文件
