@@ -56,3 +56,6 @@
 2026-01-04 14:59:59.768 INFO [tid:181878] start exercise
 2026-01-04 14:59:59.769 DEBUG [tid:181878] test param.i=10
 2026-01-04 14:59:59.769 INFO [tid:181878] end exercise
+2026-01-05 10:05:08.101 INFO [tid:692615] start exercise
+2026-01-05 10:05:08.101 DEBUG [tid:692615] test param.i=10
+2026-01-05 10:05:08.101 INFO [tid:692615] end exercise
