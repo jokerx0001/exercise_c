@@ -15,3 +15,6 @@ build/
 .github/
 .qoder/
 */.qoder/
+
+#log
+*.log
