@@ -21,27 +21,29 @@ target_compile_options(exercise_core PRIVATE -Wall -Wextra)
 add_executable(exercise "${CMAKE_SOURCE_DIR}/src/main.c")
 target_link_libraries(exercise PRIVATE exercise_core)
 
-# 依赖库处理
-include(ExternalProject)
+# =============================================================================
+# 依赖：vendor zlog（不依赖 brew，不拉远端）
+# =============================================================================
+# 你的 zlog.h 位于 third_party/zlog/src/zlog.h
+set(ZLOG_SRC_DIR "${CMAKE_SOURCE_DIR}/third_party/zlog/src")
+set(ZLOG_LIB "${ZLOG_SRC_DIR}/libzlog.a")
 
-# zlog
-ExternalProject_Add(zlog_project
-    SOURCE_DIR "${CMAKE_SOURCE_DIR}/third_party/zlog"
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND $(MAKE)
-    INSTALL_COMMAND ""
-    BUILD_IN_SOURCE 1
-)
-ExternalProject_Get_Property(zlog_project SOURCE_DIR)
-add_library(zlog STATIC IMPORTED)
+if(NOT EXISTS "${ZLOG_SRC_DIR}/zlog.h")
+    message(FATAL_ERROR "zlog.h not found: ${ZLOG_SRC_DIR}/zlog.h")
+endif()
+
+if(NOT EXISTS "${ZLOG_LIB}")
+    message(FATAL_ERROR "libzlog.a not found: ${ZLOG_LIB}. Please build vendor zlog first (e.g. make -C third_party/zlog/src).")
+endif()
+
+add_library(zlog STATIC IMPORTED GLOBAL)
 set_target_properties(zlog PROPERTIES
-    IMPORTED_LOCATION "${SOURCE_DIR}/src/libzlog.a"
+    IMPORTED_LOCATION "${ZLOG_LIB}"
+    INTERFACE_INCLUDE_DIRECTORIES "${ZLOG_SRC_DIR}"
 )
-add_dependencies(zlog zlog_project)
-# 让可执行与核心模块能找到 zlog.h（zlog 仓库有 include/ 目录；如无则改为 src/）
-target_include_directories(exercise PUBLIC "${SOURCE_DIR}/include")
-target_include_directories(exercise_core PUBLIC "${SOURCE_DIR}/include")
-# 链接 zlog 库
+
+# 谁需要包含 zlog.h，就链接 zlog（头文件目录会自动传播）
+target_link_libraries(exercise_core PRIVATE zlog)
 target_link_libraries(exercise PRIVATE zlog)
 
 # 运行时资源拷贝(与Makefile的resource目标类似)

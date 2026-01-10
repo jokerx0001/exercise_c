@@ -10,9 +10,11 @@
 #include "util/time_util.h"
 #include <stdlib.h>
 #include <string.h>
+#include <zlog.h>
 
 void do_test_bound(void);
 double test_bound(int i);
+zlog_category_t *zlog_common_t;
 
 typedef struct {
   int arr[2];
@@ -20,11 +22,24 @@ typedef struct {
 } ac;
 
 void run_exercise(void) {
-  log_init("exercise.log", DEBUG);
-  log_info("start exercise");
-  log_debug("test param.i=%d", 10);
-  log_info("end exercise");
-  log_shutdown();
+  // log_init("exercise.log", DEBUG);
+  // log_info("start exercise");
+  // log_debug("test param.i=%d", 10);
+  // log_info("end exercise");
+  // log_shutdown();
+  int rc = zlog_init("resources/zlog.conf");
+  if (rc) {
+    printf("zlog init failed!program exit.");
+    return;
+  }
+  zlog_common_t = zlog_get_category("common");
+  if (!zlog_common_t) {
+    printf("zlog get category common failed!program exit.");
+    zlog_fini();
+    return;
+  }
+  zlog_info(zlog_common_t, "test");
+  zlog_fini();
 }
 
 void do_test_bound() {
