@@ -6,13 +6,13 @@ DerivedData/
 build/
 
 # vscode
-.vscode/
+#.vscode/
 
 # macos
 .DS_Store
 
 #plugin
-.github/
+#.github/
 .qoder/
 */.qoder/
 

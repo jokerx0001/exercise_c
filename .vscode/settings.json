@@ -1,0 +1,51 @@
+{
+    // 终端与平台
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    // 文件与索引：忽略构建产物以提速
+    "files.exclude": {
+        "**/build/**": true
+    },
+    "search.exclude": {
+        "**/build/**": true
+    },
+    "files.watcherExclude": {
+        "**/build/**": true
+    },
+    // C/C++ IntelliSense 与格式化
+    "C_Cpp.default.compilerPath": "/usr/bin/clang",
+    "C_Cpp.default.intelliSenseMode": "macos-clang-x64",
+    "C_Cpp.default.cStandard": "c99",
+    "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
+    "C_Cpp.errorSquiggles": "enabled",
+    // 头文件目录（与项目约定一致）
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/src/include",
+        "${workspaceFolder}/**"
+    ],
+    // 使用 clang-format（可在项目根添加 .clang-format）
+    "C_Cpp.clang_format_style": "file",
+    // 语言专用编辑习惯
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.formatOnSave": true,
+        "editor.tabSize": 4
+    },
+    "[makefile]": {
+        // Makefile 的命令必须用 Tab，避免空格导致的 “missing separator”
+        "editor.insertSpaces": false,
+        "editor.detectIndentation": false
+    },
+    // CMake Tools（若使用 CMake 流程）
+    "cmake.sourceDirectory": "${workspaceFolder}",
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.configureOnOpen": true,
+    // 让 CMake Tools 生成 compile_commands.json 到 build 目录（你已在 CMakeLists.txt 中开启）
+    "cmake.exportCompileCommandsFile": true,
+    // 代码风格与通用编辑体验
+    "files.trimTrailingWhitespace": true,
+    // 语法关联：将 .h 视为 C 头文件（避免被当作 C++）
+    "files.associations": {
+        "*.h": "c",
+        "Makefile": "makefile"
+    }
+}

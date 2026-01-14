@@ -1,0 +1,39 @@
+{
+    // Zed 项目设置（只对本仓库生效）
+    // 说明：Zed 的 settings.json 支持 // 注释（JSONC 超集）。
+    // 将 .h 作为 C（避免被当成 C++ 头文件导致 clangd 行为偏差）
+    "file_types": {
+        "C": [
+            "h"
+        ]
+    },
+    // 重要：这里会覆盖默认的 file_scan_exclusions。
+    // 因为我们需要额外排除 build/，所以把默认值 + build/ 一并写上。
+    "file_scan_exclusions": [
+        "**/.git",
+        "**/.svn",
+        "**/.hg",
+        "**/.jj",
+        "**/.sl",
+        "**/.repo",
+        "**/CVS",
+        "**/.DS_Store",
+        "**/Thumbs.db",
+        "**/.classpath",
+        "**/.settings",
+        "**/build",
+        "**/build/**"
+    ],
+    "languages": {
+        "C": {
+            "tab_size": 4,
+            "format_on_save": "on",
+            "formatter": "language_server"
+        },
+        "Makefile": {
+            // Makefile 语法要求命令缩进必须是 Tab
+            "hard_tabs": true,
+            "tab_size": 4
+        }
+    }
+}

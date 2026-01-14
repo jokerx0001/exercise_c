@@ -1,0 +1,4 @@
+# yaml-language-server: $schema=https://json.schemastore.org/clangd.json
+# 本项目为纯 C 工程：强制 clangd 按 C 语言解析（尤其是头文件）
+CompileFlags:
+  Add: [-xc]

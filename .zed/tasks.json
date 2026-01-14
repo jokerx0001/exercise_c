@@ -1,0 +1,76 @@
+[
+    {
+        "label": "cmake: configure + build (Debug)",
+        "command": "sh",
+        "args": [
+            "-lc",
+            "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j"
+        ],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "reveal": "always",
+        "use_new_terminal": false
+    },
+    {
+        "label": "run: exercise (cmake build then run)",
+        "command": "sh",
+        "args": [
+            "-lc",
+            "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j && ./build/exercise"
+        ],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "reveal": "always",
+        "use_new_terminal": false
+    },
+    {
+        "label": "cmake: configure (Debug)",
+        "command": "cmake",
+        "args": [
+            "-S",
+            ".",
+            "-B",
+            "build",
+            "-DCMAKE_BUILD_TYPE=Debug"
+        ],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "reveal": "always"
+    },
+    {
+        "label": "cmake: build (Debug)",
+        "command": "cmake",
+        "args": [
+            "--build",
+            "build",
+            "-j"
+        ],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "reveal": "always"
+    },
+    {
+        "label": "run: exercise (CMake Debug build)",
+        "command": "./build/exercise",
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "reveal": "always",
+        "use_new_terminal": false
+    },
+    {
+        "label": "link: compile_commands.json -> project root",
+        "command": "ln",
+        "args": [
+            "-sf",
+            "build/compile_commands.json",
+            "compile_commands.json"
+        ],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "reveal": "never"
+    },
+    {
+        "label": "clean: remove build/",
+        "command": "rm",
+        "args": [
+            "-rf",
+            "build"
+        ],
+        "cwd": "$ZED_WORKTREE_ROOT",
+        "reveal": "always"
+    }
+]

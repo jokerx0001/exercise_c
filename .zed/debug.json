@@ -1,0 +1,16 @@
+[
+    {
+        "label": "Debug: exercise (CMake Debug)",
+        "build": {
+            "command": "sh",
+            "args": [
+                "-lc",
+                "cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug && cmake --build build -j"
+            ],
+            "cwd": "$ZED_WORKTREE_ROOT"
+        },
+        "program": "$ZED_WORKTREE_ROOT/build/exercise",
+        "request": "launch",
+        "adapter": "CodeLLDB"
+    }
+]
