@@ -1,6 +1,4 @@
 {
-    // 终端与平台
-    "terminal.integrated.defaultProfile.osx": "zsh",
     // 文件与索引：忽略构建产物以提速
     "files.exclude": {
         "**/build/**": true
@@ -12,8 +10,6 @@
         "**/build/**": true
     },
     // C/C++ IntelliSense 与格式化
-    "C_Cpp.default.compilerPath": "/usr/bin/clang",
-    "C_Cpp.default.intelliSenseMode": "macos-clang-x64",
     "C_Cpp.default.cStandard": "c99",
     "C_Cpp.default.compileCommands": "${workspaceFolder}/build/compile_commands.json",
     "C_Cpp.errorSquiggles": "enabled",
